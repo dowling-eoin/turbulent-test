@@ -3,6 +3,8 @@ import { Draggable } from 'react-drag-reorder';
 import "./Display.css";
 import Line from "./Line";
 import text from "../text/text.json";
+//import debounce from 'lodash.debounce';
+import _, {debounce} from 'lodash';
 
 interface IProps {};
 interface IState {
@@ -50,8 +52,12 @@ class Display extends React.Component<IProps, IState> {
 
     sendOffWord(word:any) {
         const url = "https://jsonplaceholder.typicode.com/posts/";
-       console.log(word);
+
        let payload = word.join(' ');
+        (debounce(function() {
+            // All the taxing stuff you do
+
+
         (async () => {
             const rawResponse = await fetch(url,
                 {
@@ -73,6 +79,7 @@ class Display extends React.Component<IProps, IState> {
             });
         })();
 
+        }, 2000))();
 
     }
 
