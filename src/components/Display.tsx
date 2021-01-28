@@ -49,8 +49,31 @@ class Display extends React.Component<IProps, IState> {
 
 
     sendOffWord(word:any) {
-        const url = "https://jsonplaceholder.typecode.com/";
+        const url = "https://jsonplaceholder.typicode.com/posts/";
        console.log(word);
+       let payload = word.join(' ');
+        (async () => {
+            const rawResponse = await fetch(url,
+                {
+                    method: "POST",
+
+                    // whatever data you want to post with a key-value pair
+
+                    body: JSON.stringify({body: payload}),
+                    headers:
+                        {
+                            "Content-Type": "application/x-www-form-urlencoded"
+                        }
+
+                }).then((response) =>
+            {
+                console.log(response);
+            }).catch(rejected => {
+                console.log(rejected);
+            });
+        })();
+
+
     }
 
 

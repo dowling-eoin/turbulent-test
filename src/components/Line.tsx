@@ -4,7 +4,7 @@ import "./Line.css";
 function Line(props: any) {
   const { line, index, callback, callback2 } = props;
   useEffect(() => {
-    callback(" "+line);
+    callback(line);
    // callback2();
 //trimWord();
   });
