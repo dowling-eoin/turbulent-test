@@ -1,0 +1,4 @@
+
+  {
+    "body":"This is a string with several characters. 120 to be precise I want to split it into substrings of length twenty or less."
+  }
