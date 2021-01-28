@@ -49,29 +49,22 @@ class Display extends React.Component<IProps, IState> {
 
 
     sendOffWord(word:any) {
+        const url = "https://jsonplaceholder.typecode.com/";
        console.log(word);
     }
 
 
   callback(line:any) {
-        let that = this;
 
-     // let count = 0;
-          const lineCount = that.state.lineCount;
 
            const count = this.callback2();
-      console.log(count);
 
-              //   count++;
-
-               console.log(count);
-
-              that.setState(prevState => ({
+              this.setState(prevState => ({
                   sendWord: [...prevState.sendWord, line]
               }), () => {
-                 if (count === lineCount) {
-                      that.setState({sendWord: [...that.state.sendWord.slice(lineCount, lineCount * 2)]}, () => {
-                          that.sendOffWord(that.state.sendWord);
+                 if (count === this.state.lineCount) {
+                      this.setState({sendWord: [...this.state.sendWord.slice(this.state.lineCount, this.state.lineCount * 2)]}, () => {
+                          this.sendOffWord(this.state.sendWord);
                       })
                   }
               });
@@ -81,9 +74,8 @@ class Display extends React.Component<IProps, IState> {
 
   };
 
-callback2 = (()=> {
+callback2 = (function(limit) {
         let count = 0;
-        let limit = 8;
        return function() {
              count ++;
             if(count === limit){
@@ -92,7 +84,7 @@ callback2 = (()=> {
             }
             return count;
         };
-    })();
+    })(this.lines().length);
 
     componentDidMount(): void {
         this.setState({ lineCount: this.lines().length });
