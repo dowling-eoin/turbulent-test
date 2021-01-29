@@ -2,11 +2,9 @@ import React, { useEffect } from 'react';
 import "./Line.css";
 
 function Line(props: any) {
-  const { line, index, callback, callback2 } = props;
+  const { line, updateLines } = props;
   useEffect(() => {
-    callback(line);
-   // callback2();
-//trimWord();
+    updateLines(line);
   });
 
   return <div className="Line">{line}</div>;

@@ -3,14 +3,12 @@ import { Draggable } from 'react-drag-reorder';
 import "./Display.css";
 import Line from "./Line";
 import text from "../text/text.json";
-//import debounce from 'lodash.debounce';
 import _, {debounce} from 'lodash';
 
 interface IProps {};
 interface IState {
     lineCount: number;
-    Count: number;
-    sendWord: Array<[]>;
+    sendString: Array<[]>;
     line: string;
 };
 
@@ -20,8 +18,7 @@ class Display extends React.Component<IProps, IState> {
         super(Props);
         this.state = {
             lineCount: 0,
-            Count: 0,
-            sendWord : [],
+            sendString : [],
             line: "",
         };
         let word = [];
@@ -34,19 +31,29 @@ class Display extends React.Component<IProps, IState> {
       );
   }
 
-  splitString(str: any, l: any) {
-    const strs = [];
-    let string = str;
-    while (string.length > l) {
-      let pos = string.substring(0, l).lastIndexOf(" ");
-      pos = pos <= 0 ? l : pos;
-              strs.push(string.substring(0, pos));
-      let i = string.indexOf(" ", pos) + 1;
-      if (i < pos || i > pos + l) i = pos;
-      string = string.substring(i);
+  splitString(string: any, length: any) {
+    const lines = [];
+    let remainingString = string;
+    while (remainingString.length > length) {
+
+      let lineEnd = remainingString.substr(0, length).lastIndexOf(" ");
+        //If lineEnd is less than 0, lineEnd = max line length
+      lineEnd = lineEnd <= 0 ? length : lineEnd;
+//Add line to lines array
+              lines.push(remainingString.substr(0, lineEnd));
+//Get position of start of remaining string
+      let stringStart = remainingString.indexOf(" ", lineEnd) + 1;
+
+      if ((stringStart < lineEnd) || (stringStart > (lineEnd + length))) {
+          stringStart = lineEnd;
+      }
+      //Remove line from remaining string
+      remainingString = remainingString.substr(stringStart);
+
     }
-    strs.push(string);
-    return strs;
+
+    lines.push(remainingString);
+    return lines;
   };
 
 
@@ -55,22 +62,16 @@ class Display extends React.Component<IProps, IState> {
 
        let payload = word.join(' ');
         (debounce(function() {
-            // All the taxing stuff you do
-
 
         (async () => {
             const rawResponse = await fetch(url,
                 {
                     method: "POST",
-
-                    // whatever data you want to post with a key-value pair
-
                     body: JSON.stringify({body: payload}),
                     headers:
                         {
                             "Content-Type": "application/x-www-form-urlencoded"
                         }
-
                 }).then((response) =>
             {
                 console.log(response);
@@ -84,17 +85,17 @@ class Display extends React.Component<IProps, IState> {
     }
 
 
-  callback(line:any) {
+  updateLines(line:any) {
 
 
-           const count = this.callback2();
+           const count = this.countLineUpdates();
 
               this.setState(prevState => ({
-                  sendWord: [...prevState.sendWord, line]
+                  sendString: [...prevState.sendString, line]
               }), () => {
                  if (count === this.state.lineCount) {
-                      this.setState({sendWord: [...this.state.sendWord.slice(this.state.lineCount, this.state.lineCount * 2)]}, () => {
-                          this.sendOffWord(this.state.sendWord);
+                      this.setState({sendString: [...this.state.sendString.slice(this.state.lineCount, this.state.lineCount * 2)]}, () => {
+                          this.sendOffWord(this.state.sendString);
                       })
                   }
               });
@@ -104,7 +105,7 @@ class Display extends React.Component<IProps, IState> {
 
   };
 
-callback2 = (function(limit) {
+countLineUpdates = (function(limit) {
         let count = 0;
        return function() {
              count ++;
@@ -118,17 +119,17 @@ callback2 = (function(limit) {
 
     componentDidMount(): void {
         this.setState({ lineCount: this.lines().length });
-        this.setState({ sendWord: this.lines() });
+        this.setState({ sendString: this.lines() });
     };
 
   render() {
     return (
       <div className="">
-          <p>{this.state.sendWord}</p>
+          <p>{this.state.sendString}</p>
       <br/>
         <Draggable>
         {this.lines().map((line, index) => (
-          <Line line={line} index={index} callback2={this.callback2.bind(this)} callback={this.callback.bind(this)}/>
+          <Line line={line} index={index} updateLines={this.updateLines.bind(this)}/>
         ))}
         </Draggable>
       </div>
