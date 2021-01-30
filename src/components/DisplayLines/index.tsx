@@ -50,17 +50,13 @@ class DisplayText extends React.Component<IProps, IState> {
         //If the line contains no space - make the index of the end of the line the same as line limit
         lineEnd = lineEnd <= 0 ? limit : lineEnd;
 
-
-
         //Add line to lines array
               lines.push(remainingString.substr(0, lineEnd));
 
 
     //Get the position of the start of the remaining string
       let stringStart = remainingString.indexOf(" ", lineEnd) + 1;
-        console.log("not "+ stringStart);
         if ((stringStart < lineEnd) || (stringStart > (lineEnd + limit))) {
-            console.log("special "+ stringStart);
             stringStart = lineEnd;
         }
         //Remove line from remaining string
@@ -77,9 +73,9 @@ class DisplayText extends React.Component<IProps, IState> {
         const url = "https://jsonplaceholder.typicode.com/posts/";
 
        let payload = word.join(' ');
+       let context = this;
        (debounce(function() {
-
-          let API = async () => {
+           (async () => {
             const rawResponse = await fetch(url,
                 {
                     method: "POST",
@@ -91,13 +87,13 @@ class DisplayText extends React.Component<IProps, IState> {
                 }).then((response) =>
             {
                 console.log(response);
-                this.hideIcon();
+                context.setState({loading: false});
             }).catch(rejected => {
                 console.log(rejected);
-                this.hideIcon();
+                context.setState({loading: false});
             });
-        };
-       }, 2000))();
+        })();
+       }, 2000))(context);
 
     }
 
