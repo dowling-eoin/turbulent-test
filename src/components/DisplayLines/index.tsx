@@ -5,6 +5,7 @@ import Line from "./Line";
 import text from "../../text/text.json";
 import _, {debounce} from 'lodash';
 import turbulent from "../../turbulent.svg";
+import logo from "../../logo.svg";
 
 interface IProps {};
 interface IState {
@@ -15,7 +16,6 @@ interface IState {
 };
 
 class DisplayText extends React.Component<IProps, IState> {
-
     constructor(Props: IProps) {
         super(Props);
         this.state = {
@@ -30,11 +30,12 @@ class DisplayText extends React.Component<IProps, IState> {
      return  this.splitString(
           text.body,
           80,
-         false,
+         true,
+         false
       );
   }
 
-  splitString(string: any, limit: number, allowBreaks: boolean) {
+  splitString(string: any, limit: number, allowBreaks: boolean, wordWrap: boolean) {
     const lines = [];
     let remainingString = string;
 
@@ -50,17 +51,19 @@ class DisplayText extends React.Component<IProps, IState> {
         //If the line contains no space - make the index of the end of the line the same as line limit
         lineEnd = lineEnd <= 0 ? limit : lineEnd;
 
-
-
         //Add line to lines array
               lines.push(remainingString.substr(0, lineEnd));
 
-
     //Get the position of the start of the remaining string
       let stringStart = remainingString.indexOf(" ", lineEnd) + 1;
-        console.log("not "+ stringStart);
-        if ((stringStart < lineEnd) || (stringStart > (lineEnd + limit))) {
-            console.log("special "+ stringStart);
+
+      //Edge cases:
+        //What if There are no spaces in the next line?
+        //OR
+        //There are no more spaces after the line in the rest of the text?
+        //OR
+        //We want the words to wrap on to the next line?
+        if ((stringStart > (lineEnd + limit)) || (stringStart < lineEnd) || wordWrap === true) {
             stringStart = lineEnd;
         }
         //Remove line from remaining string
@@ -72,14 +75,14 @@ class DisplayText extends React.Component<IProps, IState> {
   };
 
 
-    sendWordToAPI(word: Array<string>) {
+    sendLinesToAPI(word: Array<string>) {
         this.setState({loading: true});
         const url = "https://jsonplaceholder.typicode.com/posts/";
 
        let payload = word.join(' ');
-       (debounce(function() {
-
-          let API = async () => {
+       let context = this;
+        return (debounce(function() {
+           (async () => {
             const rawResponse = await fetch(url,
                 {
                     method: "POST",
@@ -91,18 +94,13 @@ class DisplayText extends React.Component<IProps, IState> {
                 }).then((response) =>
             {
                 console.log(response);
-                this.hideIcon();
+                context.setState({loading: false});
             }).catch(rejected => {
                 console.log(rejected);
-                this.hideIcon();
+                context.setState({loading: false});
             });
-        };
-       }, 2000))();
-
-    }
-
-    hideIcon() {
-        this.setState({loading: false});
+        })();
+       }, 2000))(context);
     }
 
 
@@ -119,7 +117,7 @@ class DisplayText extends React.Component<IProps, IState> {
                      //Remove previous word and add new word order to state
                       this.setState({sendString: [...this.state.sendString.slice(this.state.lineCount, this.state.lineCount * 2)]}, () => {
                           //Send new word order to API
-                          this.sendWordToAPI(this.state.sendString);
+                          this.sendLinesToAPI(this.state.sendString);
                       })
                   }
               });
@@ -138,6 +136,7 @@ countLineUpdates = (function(limit: number) {
         };
     })(this.lines().length);
 
+
     componentDidMount(): void {
         this.setState({ lineCount: this.lines().length });
         this.setState({ sendString: this.lines() });
@@ -146,12 +145,14 @@ countLineUpdates = (function(limit: number) {
   render() {
     return (
       <div>
-          {this.state.loading && <img src={turbulent} className="Loading-Icon" alt="loading icon" />}
+          {this.state.loading ? <img src={turbulent} className="Loading-Icon" alt="loading icon" /> :  <img onClick={()=> this.sendLinesToAPI(this.state.sendString)} src={logo} className="App-logo" alt="logo" />}
+          <div id="display-lines">
           <Draggable>
         {this.lines().map(line => (
-          <Line key={line} className={line} line={line} updateLines={this.updateLines.bind(this)}/>
+          <Line key={line} className={Line} line={line} updateLines={this.updateLines.bind(this)}/>
         ))}
           </Draggable>
+          </div>
       </div>
     );
   }

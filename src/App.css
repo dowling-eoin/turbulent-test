@@ -4,7 +4,11 @@
 
 .App-logo {
   height: 40vmin;
-  pointer-events: none;
+  pointer-events: all;
+}
+
+.App-logo:hover {
+    animation-play-state: paused;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -15,7 +19,6 @@
 
 .App-header {
   background-color: #282c34;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -35,4 +38,32 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: white;
+}
+
+@supports (height: 100vh) {
+    body {
+        background: linear-gradient(to right top, #60cfff 50%, #DDD 50%);
+        background-size: 100% calc(100% - 100vh + 10px);
+        background-repeat: no-repeat;
+
+    }
+
+    body:before {
+        content: '';
+        position: fixed;
+        top: 5px;
+        bottom: 0;
+        width: 100%;
+        z-index: -1;
+        background: #282c34;
+    }
 }
