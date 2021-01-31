@@ -1,7 +1,7 @@
 import React from "react";
 import { Draggable } from "react-drag-reorder";
 import "./index.css";
-import debounce from "lodash";
+import debounce from "lodash/debounce";
 import Line from "./Line";
 import text from "../../text/text.json";
 import turbulent from "../../turbulent.svg";
@@ -42,7 +42,7 @@ class DisplayLines extends React.Component<IProps, IState> {
       // Get the position of the start of the remaining string
       let stringStart = remainingString.indexOf(" ", lineEnd) + 1;
 
-      // Edge cases:
+      // EDGE CASES:
       // What if There are no spaces in the next line?
       // OR
       // There are no more spaces after the line in the rest of the text?
@@ -123,10 +123,9 @@ class DisplayLines extends React.Component<IProps, IState> {
 
   sendLinesToAPI(word: Array<string>) {
     this.setState({ loading: true });
-    const url = "https://jsonplaceholder.typicode.com/posts/";
-
-    const payload = word.join(" ");
     const context = this;
+    const url = "https://jsonplaceholder.typicode.com/posts/";
+    const payload = word.join(" ");
 
     return debounce(() => {
       (async () => {
@@ -146,7 +145,7 @@ class DisplayLines extends React.Component<IProps, IState> {
             context.setState({ loading: false });
           });
       })();
-    }, 2000)(context);
+    }, 2000)();
   }
 
   render() {
