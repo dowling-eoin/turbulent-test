@@ -1,6 +1,5 @@
 {
   "name": "frontend-test",
-  "homepage": "http://ueyedesign.net/turbulent/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -39,8 +38,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "format": "prettier --write src/**/*.{ts,tsx,scss,css,json}",
-    "lint": "eslint . --ext js,jsx,ts,tsx",
-    "fix": "eslint . --fix --ext js,jsx,ts,tsx"
+    "lint": "eslint ./src --ext js,jsx,ts,tsx",
+    "fix": "eslint ./src --fix --ext js,jsx,ts,tsx"
   },
   "eslintConfig": {
     "parser": "babel-eslint",
@@ -48,6 +47,13 @@
       "browser": true,
       "node": true
     },
+    "extends": [
+      "airbnb",
+      "prettier"
+    ],
+    "plugins": [
+      "prettier"
+    ],
     "rules": {
       "react/jsx-filename-extension": [
         1,
@@ -59,10 +65,17 @@
         }
       ],
       "import/extensions": "off",
+      "no-console": "off",
       "import/no-unresolved": [
         0,
         {
           "caseSensitive": false
+        }
+      ],
+      "prettier/prettier": [
+        "error",
+        {
+          "endOfLine": "auto"
         }
       ]
     }

@@ -1,23 +1,23 @@
 .Loading-Icon {
-    height: 40vmin;
-    animation: blinker 1s linear infinite;
+  height: 40vmin;
+  animation: blinker 1s linear infinite;
 }
 
 @keyframes blinker {
-    50% {
-        opacity: 0;
-    }
+  50% {
+    opacity: 0;
+  }
 }
 
-#display-lines{
-    display: flex;
-    flex-direction: column;
-    margin: auto;
-    width: fit-content;
+#display-lines {
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  width: fit-content;
 }
 
-.Line{
-     border: 4px solid #60cfff;
-    margin-bottom: -4px;
-    pointer-events: all;
- }
+.Line {
+  border: 4px solid #60cfff;
+  margin-bottom: -4px;
+  pointer-events: all;
+}

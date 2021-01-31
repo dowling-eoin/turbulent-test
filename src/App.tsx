@@ -5,9 +5,8 @@ import DisplayLines from "./components/DisplayLines";
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-      </header>
-            <DisplayLines />
+      <header className="App-header" />
+      <DisplayLines />
     </div>
   );
 }

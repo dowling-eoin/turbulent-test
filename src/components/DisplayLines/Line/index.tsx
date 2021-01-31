@@ -1,12 +1,11 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useEffect } from "react";
 import "./index.css";
 
 function Index(props: any) {
   const { line, updateLines } = props;
 
-
   useEffect(() => {
-      updateLines(line);
+    updateLines(line);
   });
 
   return <div className="Line">{line}</div>;
